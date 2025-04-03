@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+        }
+        #recommendations {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Recommendation System</h1>
+    <p>Enter a song name to get recommendations:</p>
+    <input type="text" id="songInput" placeholder="Enter a song...">
+    <button onclick="getRecommendations()">Get Recommendations</button>
+    <div id="recommendations"></div>
+
+    <script>
+        function getRecommendations() {
+    const song = document.getElementById('songInput').value.trim();
+
+    if (song === "") {
+        alert("Please enter a song name!");
+        return;
+    }
+
+    fetch('/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ song: song })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("API Response:", data); // Debugging Step
+
+        const recommendationsDiv = document.getElementById('recommendations');
+        recommendationsDiv.innerHTML = '<h3>Recommended Songs:</h3>';
+
+        if (data.recommendations && data.recommendations.length > 0) {
+            data.recommendations.forEach(songObj => {
+                if (songObj && songObj.song && songObj.artist) {
+                    recommendationsDiv.innerHTML += `<p>${songObj.song}</p>`;
+                } else {
+                    recommendationsDiv.innerHTML += `<p>Invalid song data received.</p>`;
+                }
+            });
+        } else {
+            recommendationsDiv.innerHTML += '<p>No recommendations found.</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('recommendations').innerHTML = '<h3>Error retrieving recommendations.</h3>';
+    });
+}
+
+    </script>
+</body>
+</html>
