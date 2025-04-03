@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-app = Flask("Application")
+app = Flask("app")
 
 # Load dataset
 df = pd.read_csv("dataset.csv")
